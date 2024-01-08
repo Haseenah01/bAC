@@ -18,6 +18,7 @@ defmodule BACWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :home
+    resources "/customers", CustomerController, except: [:new, :edit]
   end
 
   # Other scopes may use custom stacks.
