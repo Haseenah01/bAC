@@ -2,7 +2,8 @@ defmodule BAC.Repo.Migrations.CreateCustomers do
   use Ecto.Migration
 
   def change do
-    create table(:customers) do
+    create table(:customers, primary_key: false) do
+      add :id, :uuid, primary_key: true
       add :firstName, :string
       add :lastName, :string
       add :phoneNumber, :string
