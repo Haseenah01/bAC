@@ -51,7 +51,8 @@ defmodule BAC.MixProject do
       {:jason, "~> 1.2"},
       {:plug_cowboy, "~> 2.5"},
       {:oban, "~> 2.16"},
-      {:bamboo, "~> 2.3.0"}
+      {:bamboo, "~> 2.3.0"},
+      {:oban_live_dashboard, "~> 0.1.0"}
     ]
   end
 

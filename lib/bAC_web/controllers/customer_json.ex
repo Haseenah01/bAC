@@ -15,6 +15,10 @@ defmodule BACWeb.CustomerJSON do
     %{data: data(customer)}
   end
 
+  def show_data(%{customer: "customer"}) do
+    %{customer: "customer"}
+  end
+
   defp data(%Customer{} = customer) do
     %{
       id: customer.id,

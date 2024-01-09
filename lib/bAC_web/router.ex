@@ -19,8 +19,10 @@ defmodule BACWeb.Router do
 
     get "/", PageController, :home
     post "/customer/create", CustomerController, :create
+
     # resources "/customers", CustomerController, except: [:new, :edit]
   end
+
 
   # Other scopes may use custom stacks.
   # scope "/api", BACWeb do
@@ -39,7 +41,10 @@ defmodule BACWeb.Router do
     scope "/dev" do
       pipe_through :browser
 
-      live_dashboard "/dashboard", metrics: BACWeb.Telemetry
+      live_dashboard "/dashboard", metrics: BACWeb.Telemetry,
+      additional_pages: [
+        oban: Oban.LiveDashboard
+      ]
       forward "/mailbox", Plug.Swoosh.MailboxPreview
     end
   end
