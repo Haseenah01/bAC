@@ -7,6 +7,12 @@
 # General application configuration
 import Config
 
+
+config :bAC, Oban,
+  repo: BAC.Repo,
+  plugins: [Oban.Plugins.Pruner],
+  queues: [default: 10]
+
 config :bAC,
   ecto_repos: [BAC.Repo]
 
