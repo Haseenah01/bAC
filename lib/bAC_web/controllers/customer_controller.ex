@@ -15,7 +15,7 @@ defmodule BACWeb.CustomerController do
 
     with {:ok, _customer_par} <- Oban.insert(BAC.Workers.CreateCustomerWorker.new(%{"customer" => customer_params})),
          {:ok, %Customer{} = customer} <- Customers.create_customer(customer_params) do
-            #IO.inspect(customer_par)
+
       conn
         |> put_status(:created)
         |> render(:show, customer: customer)

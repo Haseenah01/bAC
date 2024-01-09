@@ -1,8 +1,7 @@
 defmodule BAC.Workers.CreateCustomerWorker do
   require Logger
   alias BAC.ObMailer
-  alias BAC.Customers
-  alias BAC.Customers.Customer
+  alias BAC.CustomerValidator
 
   import Bamboo.Email
 
@@ -15,12 +14,16 @@ defmodule BAC.Workers.CreateCustomerWorker do
   def perform(%Oban.Job{args: %{"customer" => customer_params}} = _job) do
    #
 
+    id = Map.get(customer_params, "idNumber")
+    dob = BAC.CustomerValidator.validate_and_extract_dob(id) #returns date of birth
+    IO.inspect(dob)
     email = Map.get(customer_params, "email")
 
-    id = Map.get(customer_params, "idNumber")
 
 
-    # first verify those params
+    customer_params = Map.put(customer_params, :dob, BAC.CustomerValidator.extract_dob(id))
+    IO.inspect(customer_params)
+
     with {:ok, _message1} <- verify_id_number(id),
     {:ok, _message2} <- verify_email(email) do
 
