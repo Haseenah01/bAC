@@ -15,10 +15,11 @@ defmodule BACWeb.Router do
   end
 
   scope "/", BACWeb do
-    pipe_through :browser
+    pipe_through :api
 
     get "/", PageController, :home
-    resources "/customers", CustomerController, except: [:new, :edit]
+    post "/customer/create", CustomerController, :create
+    # resources "/customers", CustomerController, except: [:new, :edit]
   end
 
   # Other scopes may use custom stacks.
