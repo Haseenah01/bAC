@@ -15,6 +15,8 @@ defmodule BAC.Repo.Migrations.CreateCustomers do
       timestamps()
     end
 
-    create unique_index(:customers, [:email,:idNumber,:phoneNumber])
+    create unique_index(:customers, [:email])
+    create unique_index(:customers, [:idNumber])
+    create unique_index(:customers, [:phoneNumber])
   end
 end

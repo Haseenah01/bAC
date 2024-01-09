@@ -32,6 +32,7 @@ defmodule BAC.Workers.CreateCustomerWorker do
       )
       ObMailer.deliver_now(email)
       IO.inspect(customer)
+    #  {:ok, customer}
 
     else
       {:error, reason} -> {:error, reason}

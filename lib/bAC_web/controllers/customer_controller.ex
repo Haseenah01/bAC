@@ -12,8 +12,9 @@ defmodule BACWeb.CustomerController do
   end
 
   def create(conn, %{"customer" => customer_params}) do
-    IO.inspect(customer_params)
-    with {:ok, _} <- Oban.insert(BAC.Workers.CreateCustomerWorker.new(%{"customer" => customer_params})) do
+
+    with {:ok, customer_par} <- Oban.insert(BAC.Workers.CreateCustomerWorker.new(%{"customer" => customer_params})) do
+      IO.inspect(customer_par)
       conn
       |> put_status(:created)
       # |> put_resp_header("location", ~p"/api/customers/#{customer}")
