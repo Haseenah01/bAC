@@ -15,10 +15,24 @@ defmodule BACWeb.Router do
   end
 
   scope "/", BACWeb do
-    pipe_through :browser
+    pipe_through :api
 
     get "/", PageController, :home
-    resources "/customers", CustomerController, except: [:new, :edit]
+    #resources "/customers", CustomerController, except: [:new, :edit]
+    post "/customers/create", CustomerController, :create
+    get "/customers", CustomerController, :index
+
+    resources "/service_activation_logs", ServiceActivationLogController, except: [:new, :edit]
+    resources "/cards", CardController, except: [:new, :edit]
+    resources "/accounts", AccountController, except: [:new, :edit]
+  end
+
+  if Mix.env == :dev do
+    # If using Phoenix
+    forward "/sent_emails", Bamboo.SentEmailViewerPlug
+
+    # If using Plug.Router, make sure to add the `to`
+    # forward "/sent_emails", to: Bamboo.SentEmailViewerPlug
   end
 
   # Other scopes may use custom stacks.
@@ -38,7 +52,10 @@ defmodule BACWeb.Router do
     scope "/dev" do
       pipe_through :browser
 
-      live_dashboard "/dashboard", metrics: BACWeb.Telemetry
+      live_dashboard "/dashboard",
+      additional_pages: [
+        oban: Oban.LiveDashboard
+      ] , metrics: BACWeb.Telemetry
       forward "/mailbox", Plug.Swoosh.MailboxPreview
     end
   end

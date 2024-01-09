@@ -10,9 +10,11 @@ defmodule BAC.Repo.Migrations.CreateCustomers do
       add :dateOfBirth, :date
       add :idNumber, :string
       add :email, :string
-      add :status, :string
+      add :status, :string, default: "InActive", null: false
 
       timestamps()
     end
+
+    create unique_index(:customers, [:email,:idNumber,:phoneNumber])
   end
 end

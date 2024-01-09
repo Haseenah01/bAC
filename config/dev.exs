@@ -1,9 +1,14 @@
 import Config
 
+
+config :bAC, BAC.ObMailer,
+  adapter: Bamboo.LocalAdapter
+
+
 # Configure your database
 config :bAC, BAC.Repo,
   username: "postgres",
-  password: "123456",
+  password: "Hata@randima.00",
   hostname: "localhost",
   database: "bac_dev",
   stacktrace: true,

@@ -10,6 +10,23 @@ import Config
 config :bAC,
   ecto_repos: [BAC.Repo]
 
+config :bAC, Oban,
+  repo: BAC.Repo,
+  plugins: [
+    Oban.Plugins.Pruner,
+    # {Oban.Plugins.Cron,
+    #  crontab: [
+    #    {"* * * * *", TsOban.StatisticsGenerator},
+    #    {"@reboot",TsOban.Workers.DailyEmail},
+    #    {"* * * * *",TsOban.Workers.DailyEmail},
+    #    {"@hourly", TsOban.StatisticsGenerator},
+    #    {"@reboot", TsOban.StatisticsGenerator},
+    #    {"@daily", TsOban.StatisticsGenerator}
+    #  ]}
+  ],
+  queues: [default: 10, scheduled: 10, events: [limit: 20, dispatch_cooldown: 10]]
+
+
 # Configures the endpoint
 config :bAC, BACWeb.Endpoint,
   url: [host: "localhost"],

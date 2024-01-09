@@ -12,6 +12,7 @@ defmodule BAC.Application do
       BACWeb.Telemetry,
       # Start the Ecto repository
       BAC.Repo,
+      {Oban, Application.fetch_env!(:bAC, Oban)},
       # Start the PubSub system
       {Phoenix.PubSub, name: BAC.PubSub},
       # Start Finch
