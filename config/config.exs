@@ -7,6 +7,15 @@
 # General application configuration
 import Config
 
+
+
+config :bAC, :gen_smtp,
+  server: "smtp.example.com",
+  port: 587,
+  username: "siphonhata@gmail.com",
+  password: "your_password",
+  ssl: false
+
 config :bAC,
   ecto_repos: [BAC.Repo]
 

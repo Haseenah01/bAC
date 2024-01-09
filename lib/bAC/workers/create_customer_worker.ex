@@ -12,27 +12,27 @@ defmodule BAC.Workers.CreateCustomerWorker do
 
 
   @impl true
-  def perform(%Oban.Job{state: state,attempt: attempt,args: %{"customer" => customer_params}} = job) do
-    IO.puts("HATALULIHATALULIHATALULI")
-    email_stru = Map.get(customer_params, "email")
+  def perform(%Oban.Job{args: %{"customer" => customer_params}} = _job) do
+   #
 
-    id_stru = Map.get(customer_params, "idNumber")
+    email = Map.get(customer_params, "email")
+
+    id = Map.get(customer_params, "idNumber")
 
 
     # first verify those params
-    with {:ok, message1} <- verify_id_number(id_stru),
-    {:ok, message2} <- verify_email(email_stru),
-    {:ok, %Customer{} = customer} <- Customers.create_customer(customer_params) do
-   IO.inspect("HERER#E")
+    with {:ok, _message1} <- verify_id_number(id),
+    {:ok, _message2} <- verify_email(email) do
+
       email = new_email(
-        to: customer.email,
+        to: email,
         from: "bac@support.com",
         subject: "Customer Registration",
-        text_body: "You have suscceful registered your account #{customer.email} !!!"
+        text_body: "You have suscceful registered your account #{email} !!!"
       )
       ObMailer.deliver_now(email)
-      IO.inspect(customer)
-    #  {:ok, customer}
+      #IO.inspect(customer)
+    #{:ok, customer}
 
     else
       {:error, reason} -> {:error, reason}

@@ -10,7 +10,7 @@ defmodule BAC.Repo.Migrations.CreateCustomers do
       add :dateOfBirth, :date
       add :idNumber, :string
       add :email, :string
-      add :status, :string, default: "InActive", null: false
+      add :status, :string, default: "Inactive"
 
       timestamps()
     end

@@ -15,7 +15,6 @@ defmodule BACWeb.CardController do
     with {:ok, %Card{} = card} <- Accounts.create_card(card_params) do
       conn
       |> put_status(:created)
-      |> put_resp_header("location", ~p"/api/cards/#{card}")
       |> render(:show, card: card)
     end
   end
