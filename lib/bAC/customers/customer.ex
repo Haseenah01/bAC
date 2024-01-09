@@ -22,7 +22,13 @@ defmodule BAC.Customers.Customer do
     |> cast(attrs, [:firstName, :lastName, :phoneNumber, :dateOfBirth, :idNumber, :email, :status])
     |> validate_required([:firstName, :lastName, :phoneNumber, :dateOfBirth, :idNumber, :email])
     |> validate_format(:email, ~r/^[^\s]+@[^\s]+$/, message: "must have the @ sign and no spaces") # email validation
-    |> validate_length(:email, max: 100) # 100 chracters
-    |> unique_constraint([:email,:idNumber,:phoneNumber]) # making our email to be unique
+    |> validate_length(:email, max: 100)
+    |> validate_length(:idNumber, min: 13)
+    |> validate_length(:idNumber, max: 13)
+    |> validate_length(:phoneNumber, min: 10)
+    |> validate_length(:phoneNumber, max: 10)
+    |> unique_constraint([:email])
+    |> unique_constraint([:idNumber])
+    |> unique_constraint([:phoneNumber]) # making our email to be unique
   end
 end

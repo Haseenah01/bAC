@@ -13,7 +13,7 @@ defmodule BAC.Application do
       # Start the Ecto repository
       BAC.Repo,
       # Start the Oban added
-      {Oban, Application.fetch_env!(:my_app, Oban)},
+      {Oban, Application.fetch_env!(:bAC, Oban)},
       # Start the PubSub system
       {Phoenix.PubSub, name: BAC.PubSub},
       # Start Finch
