@@ -13,8 +13,14 @@ defmodule BACWeb.CustomerController do
 
   def create(conn, %{"customer" => customer_params}) do
 
+    #id = Map.get(customer_params, "idNumber")
     with {:ok, _customer_par} <- Oban.insert(BAC.Workers.CreateCustomerWorker.new(%{"customer" => customer_params})),
          {:ok, %Customer{} = customer} <- Customers.create_customer(customer_params) do
+
+
+          Customers.update_customer(%Customer{} = customer, %{"status" => "Active"})
+          #Users.update_user(%User{} = user, %{lastLoginDate: DateTime.utc_now})
+
 
       conn
         |> put_status(:created)

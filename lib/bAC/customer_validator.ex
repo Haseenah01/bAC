@@ -1,26 +1,64 @@
 defmodule BAC.CustomerValidator do
 
-  def validate_and_extract_dob(id_number) do
-    case validate_id_length(id_number) do
-      {:ok, _} ->
-        {:ok, extract_dob(id_number)}
-      {:error, reason} ->
-        {:error, reason}
+
+  @email_regex ~r/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+
+  def verify_id_number(idnumber) do
+    case String.length(idnumber) do
+      13 ->
+        {:ok, "Valid email"}
+
+      _ ->
+        {:error, "ID number must be exactly 13 characters long"}
     end
   end
 
-  defp validate_id_length(id_number) do
-    if String.length(id_number) == 13 do
-      {:ok, id_number}
-    else
-      {:error, "Invalid ID number length"}
+  def extract_dob(id) do
+    dob_part = String.slice(id, 0..5)
+
+    case Integer.parse(dob_part) do
+      {dob, _rest} when dob > 0 ->
+        year = div(dob, 10000)
+        remaining =  rem(dob, 10000)
+        {month, day} = {div(remaining,100),  rem(remaining, 100)}
+
+        formatted_date =
+          String.pad_leading(Integer.to_string(year), 2, "0") <>
+          "-" <> String.pad_leading(Integer.to_string(month), 2, "0") <>
+          "-" <> String.pad_leading(Integer.to_string(day), 2, "0")
+        formatted_date
+
+      _ ->
+        {:error, "Invalid date of birth"}
     end
   end
 
-  def extract_dob(id_number) do
-    dob_string = String.slice(id_number, 0..7)
-    {year, month, day} = {String.slice(dob_string, 0..3), String.slice(dob_string, 4..5), String.slice(dob_string, 6..7)}
-    {:ok, "#{year}-#{month}-#{day}"}
+
+  def verify_email(email) do
+    case Regex.match?(@email_regex, email) do
+      true ->
+        {:ok, "Email is valid"}
+
+      false ->
+        {:error, "Invalid email format"}
+    end
   end
 
-end
+
+  def verify(phone_number)  do
+    case String.length(phone_number) do
+      10 ->
+        case  String.starts_with?(phone_number, "0") do
+          true -> {:ok, "Correct number"}
+
+          false -> {:error, "Phone number must start with '0'"}
+        end
+      _ ->
+        {:error, "Phone number must be 10 digits"}
+    end
+  end
+
+  def verify(_), do: {:error, "Invalid phone number"}
+
+
+ end

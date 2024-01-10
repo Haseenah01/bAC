@@ -7,7 +7,7 @@ defmodule BAC.Repo.Migrations.CreateCustomers do
       add :firstName, :string
       add :lastName, :string
       add :phoneNumber, :string
-      add :dateOfBirth, :date
+      add :dateOfBirth, :naive_datetime
       add :idNumber, :string
       add :email, :string
       add :status, :string, default: "Inactive"

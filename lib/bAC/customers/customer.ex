@@ -10,7 +10,7 @@ defmodule BAC.Customers.Customer do
     field :firstName, :string
     field :lastName, :string
     field :phoneNumber, :string
-    field :dateOfBirth, :date
+    field :dateOfBirth, :naive_datetime
     field :idNumber, :string
 
     has_many :account, BAC.Accounts.Account
