@@ -20,7 +20,7 @@ defmodule BAC.Accounts.Card do
   def changeset(card, attrs) do
     card
     |> cast(attrs, [:card_number, :expiry_date, :cvv, :card_status])
-    |> validate_required([:card_number, :expiry_date, :cvv, :card_status])
-    |> unique_constraint([:card_number, :cvv])
+    # |> validate_required([:card_number, :expiry_date, :cvv, :card_status])
+    |> unique_constraint([:card_number])
   end
 end

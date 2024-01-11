@@ -3,6 +3,12 @@ defmodule BACWeb.AccountController do
 
   alias BAC.Accounts
   alias BAC.Accounts.Account
+  alias BAC.Accounts.Card
+
+  import Ecto.Query, warn: false
+  alias BAC.Repo
+
+  alias BAC.Customers.Customer
 
   action_fallback BACWeb.FallbackController
 
@@ -11,14 +17,78 @@ defmodule BACWeb.AccountController do
     render(conn, :index, accounts: accounts)
   end
 
-  def create(conn, %{"account" => account_params}) do
-    with {:ok, %Account{} = account} <- Accounts.create_account(account_params) do
+  defp get_customer_user(id), do: Repo.get(Customer, id)
+
+
+  def create(conn, %{"customer_id" => customer_id,"account" => account_params}) do
+
+    # CHeck if customer exist or not
+
+    # def get_me_id(id) do
+    #   case Users.get_full_userhhh(id) do
+    #     nil -> {:error, :unauthorized} # this works for the error response plug ehrn using it by other side
+    #     customer -> customer.id
+    #   end
+    # end
+
+    IO.inspect(account_params)
+
+
+
+# Key-value pair to insert
+new_key = "account_number"
+new_value = BAC.Run.generate_account_number()
+IO.inspect(new_value)
+
+new_map = Map.put(account_params, new_key, new_value)
+
+IO.inspect(new_map)
+
+#     # Existing map
+# existing_map = %{key1: "value1", key2: "value2"}
+
+# # Key-value pairs to insert or update
+# new_key_value_pairs = [key3: "value3", key4: "value4"]
+
+# # Inserting or updating key-value pairs
+# new_map = existing_map
+#           |> Enum.reduce(new_key_value_pairs, &Map.put(&1, elem(&2, 0), elem(&2, 1)))
+
+# IO.inspect(new_map)
+
+# fUNCTIONALITY OF CARD
+
+expiration_date = BAC.Run.generate_expiration_date()
+card_no = BAC.Run.generate_card_number()
+
+
+last_three_digits = String.slice(card_no, -3, 3)
+
+card_params = %{"card_number" =>  card_no , "expiry_date" => expiration_date , "cvv" => last_three_digits }
+
+IO.inspect(card_params)
+    customer_struct = IO.inspect(get_customer_user(customer_id))
+
+    # {:ok, %Card{} = card} <- Accounts.create_card(account, card_params)
+    with {:ok, %Account{} = account} <- Accounts.create_account(customer_struct,new_map),
+    {:ok, %Card{} = card} <- Accounts.create_card(account, card_params)  do
       conn
       |> put_status(:created)
       |> put_resp_header("location", ~p"/api/accounts/#{account}")
       |> render(:show, account: account)
     end
   end
+
+
+
+  # def create(conn, %{"account" => account_params}) do
+  #   with {:ok, %Account{} = account} <- Accounts.create_account(account_params) do
+  #     conn
+  #     |> put_status(:created)
+  #     |> put_resp_header("location", ~p"/api/accounts/#{account}")
+  #     |> render(:show, account: account)
+  #   end
+  # end
 
   def show(conn, %{"id" => id}) do
     account = Accounts.get_account!(id)

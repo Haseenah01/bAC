@@ -49,8 +49,15 @@ defmodule BAC.Accounts do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_account(attrs \\ %{}) do
-    %Account{}
+  # def create_account(attrs \\ %{}) do
+  #   %Account{}
+  #   |> Account.changeset(attrs)
+  #   |> Repo.insert()
+  # end
+
+  def create_account(customer, attrs \\ %{}) do
+    customer
+    |> Ecto.build_assoc(:account)
     |> Account.changeset(attrs)
     |> Repo.insert()
   end
@@ -145,11 +152,14 @@ defmodule BAC.Accounts do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_card(attrs \\ %{}) do
-    %Card{}
+  def create_card(account, attrs \\ %{}) do
+    account
+    |> Ecto.build_assoc(:card)
     |> Card.changeset(attrs)
     |> Repo.insert()
   end
+
+
 
   @doc """
   Updates a card.

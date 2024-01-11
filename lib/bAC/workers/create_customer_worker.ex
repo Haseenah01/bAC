@@ -12,30 +12,32 @@ defmodule BAC.Workers.CreateCustomerWorker do
 
 
   @impl true
-  def perform(%Oban.Job{state: state,attempt: attempt,args: %{"customer" => customer_params}} = job) do
+  def perform(%Oban.Job{args: %{"customer" => customer_params}}) do
     IO.puts("HATALULIHATALULIHATALULI")
     email_stru = Map.get(customer_params, "email")
-
+  IO.inspect(email_stru)
     id_stru = Map.get(customer_params, "idNumber")
 
 
     # first verify those params
-    with {:ok, message1} <- verify_id_number(id_stru),
-    {:ok, message2} <- verify_email(email_stru),
+    with {:ok,  message1} <- verify_id_number(id_stru),
+    {:ok,  message2} <- verify_email(email_stru),
     {:ok, %Customer{} = customer} <- Customers.create_customer(customer_params) do
+
    IO.inspect("HERER#E")
-      email = new_email(
-        to: customer.email,
-        from: "bac@support.com",
-        subject: "Customer Registration",
-        text_body: "You have suscceful registered your account #{customer.email} !!!"
-      )
-      ObMailer.deliver_now(email)
-      IO.inspect(customer)
-    #  {:ok, customer}
+
+      # email = new_email(
+      #   to: customer.email,
+      #   from: "bac@support.com",
+      #   subject: "Customer Registration",
+      #   text_body: "You have suscceful registered your account #{customer.email} !!!"
+      # )
+      # ObMailer.deliver_now(email)
+     # IO.inspect(customer)
+      {:ok, customer}
 
     else
-      {:error, reason} -> {:error, reason}
+      {:error, reason} -> {:error, IO.inspect(reason)}
     end
   #  Logger.info("Job id: #{inspect(job.id)} | Job attempted at: #{inspect(job.attempted_at)}| Job state: #{inspect(job.state)} | Job queue: #{inspect(job.queue)} | #{to} | #{state} | #{attempt}")
 

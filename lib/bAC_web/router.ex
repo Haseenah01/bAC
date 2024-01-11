@@ -22,9 +22,12 @@ defmodule BACWeb.Router do
     post "/customers/create", CustomerController, :create
     get "/customers", CustomerController, :index
 
+    post "/create/accounts/:customer_id", AccountController, :create
+    get "/accounts", AccountController, :index
+
     resources "/service_activation_logs", ServiceActivationLogController, except: [:new, :edit]
     resources "/cards", CardController, except: [:new, :edit]
-    resources "/accounts", AccountController, except: [:new, :edit]
+    #resources "/accounts", AccountController, except: [:new, :edit]
   end
 
   if Mix.env == :dev do
