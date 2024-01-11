@@ -13,6 +13,8 @@ defmodule BAC.Repo.Migrations.CreateCards do
       timestamps()
     end
 
-    create unique_index(:cards, [:account_id, :card_number, :cvv])
+    create unique_index(:cards, [:account_id])
+    create unique_index(:cards, [:card_number])
+    create unique_index(:cards, [:cvv])
   end
 end

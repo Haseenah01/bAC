@@ -21,6 +21,7 @@ defmodule BAC.Accounts.Card do
     card
     |> cast(attrs, [:card_number, :expiry_date, :cvv, :card_status])
     |> validate_required([:card_number, :expiry_date, :cvv, :card_status])
-    |> unique_constraint([:card_number, :cvv])
+    |> unique_constraint([:card_number])
+    |> unique_constraint([:cvv])
   end
 end
