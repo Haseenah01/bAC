@@ -40,13 +40,5 @@ defmodule BAC.Workers.CreateCustomerWorker do
       {:error, reason} -> {:error, reason}
     end
   #  Logger.info("Job id: #{inspect(job.id)} | Job attempted at: #{inspect(job.attempted_at)}| Job state: #{inspect(job.state)} | Job queue: #{inspect(job.queue)} | #{to} | #{state} | #{attempt}")
-
-
-
-
-
   end
-
-
-
 end

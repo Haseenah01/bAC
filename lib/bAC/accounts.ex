@@ -145,8 +145,9 @@ defmodule BAC.Accounts do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_card(attrs \\ %{}) do
-    %Card{}
+  def create_card(account, attrs \\ %{}) do
+    account
+    |> Ecto.build_assoc(:card)
     |> Card.changeset(attrs)
     |> Repo.insert()
   end

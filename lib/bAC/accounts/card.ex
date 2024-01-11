@@ -6,7 +6,7 @@ defmodule BAC.Accounts.Card do
   @foreign_key_type :binary_id
   schema "cards" do
     field :card_number, :string
-    field :expiry_date, :date
+    field :expiry_date, :string
     field :cvv, :string
     field :card_status, :string
     # field :account_id, :id
@@ -20,7 +20,7 @@ defmodule BAC.Accounts.Card do
   def changeset(card, attrs) do
     card
     |> cast(attrs, [:card_number, :expiry_date, :cvv, :card_status])
-    |> validate_required([:card_number, :expiry_date, :cvv, :card_status])
+    |> validate_required([:card_number, :expiry_date, :cvv])
     |> unique_constraint([:card_number])
     |> unique_constraint([:cvv])
   end

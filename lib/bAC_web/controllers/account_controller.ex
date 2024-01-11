@@ -3,6 +3,8 @@ defmodule BACWeb.AccountController do
 
   alias BAC.Accounts
   alias BAC.Accounts.Account
+  alias BAC.Accounts
+  alias BAC.Accounts.Card
 
   action_fallback BACWeb.FallbackController
 
@@ -12,7 +14,8 @@ defmodule BACWeb.AccountController do
   end
 
   def create(conn, %{"account" => account_params}) do
-    with {:ok, %Account{} = account} <- Accounts.create_account(account_params) do
+    with {:ok, %Account{} = account} <- Accounts.create_account(account_params),
+         {:ok, %Card{} = _card} <- Accounts.create_card(account,account_params) do
       conn
       |> put_status(:created)
       |> render(:show, account: account)

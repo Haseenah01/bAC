@@ -23,7 +23,7 @@ defmodule BAC.Accounts.Account do
   def changeset(account, attrs) do
     account
     |> cast(attrs, [:account_type, :account_number, :account_status, :balance, :open_date])
-    |> validate_required([:account_type, :account_number, :account_status, :balance, :open_date])
+    |> validate_required([:account_type, :account_number, :balance, :open_date])
     |> unique_constraint(:account_number)
   end
 end
