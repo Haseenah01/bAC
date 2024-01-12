@@ -6,7 +6,7 @@ defmodule BAC.Accounts.Card do
   @foreign_key_type :binary_id
   schema "cards" do
     field :card_number, :string
-    field :expiry_date, :date
+    field :expiry_date, :string
     field :cvv, :string
     field :card_status, :string
     # field :account_id, :id
