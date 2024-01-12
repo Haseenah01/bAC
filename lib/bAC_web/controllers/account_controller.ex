@@ -19,6 +19,68 @@ defmodule BACWeb.AccountController do
 
   defp get_customer_user(id), do: Repo.get(Customer, id)
 
+  def get_me_customer_struct(id) do
+    case get_customer_user(id) do
+      nil -> {:error, :not_found} # this works for the error response plug ehrn using it by other side
+      customer -> customer
+    end
+  end
+
+
+
+  defp generate_random_card_suffix_v2 do
+    Integer.to_string(:rand.uniform(10_000_000_000_000))
+    |> String.pad_leading(16, "0")
+  end
+
+  def generate_card_number_v2 do
+    prefix = "6742"
+    new_card_number = prefix <> generate_random_card_suffix_v2()
+   # new_account_number = generate_random_number()
+   new_card_number
+    # case BAC.Repo.one(from(a in BAC.Accounts.Card, where: a.card_number == ^new_card_number)) do
+    #   nil ->
+
+    #     # Account number doesn't exist, insert into the database
+    #    # BAC.Repo.insert!(%YourApp.Accounts{account_number: new_account_number})
+    #     new_card_number
+
+    #   _existing_number ->
+    #     # Account number already exists, generate a new one
+    #     generate_card_number()
+    # end
+  end
+def create_v2(conn, %{"customer_id" => customer_id,"account" => account_params}) do
+
+    IO.inspect(account_params)
+
+new_key = "account_number"
+new_value = BAC.Run.generate_account_number()
+IO.inspect(new_value)
+
+new_map = Map.put(account_params, new_key, new_value)
+
+IO.inspect(new_map)
+
+
+expiration_date = BAC.Run.generate_expiration_date()
+card_no =  generate_card_number_v2()
+
+
+last_three_digits = String.slice(card_no, -3, 3)
+
+card_params = %{"card_number" =>  card_no , "expiry_date" => expiration_date , "cvv" => last_three_digits }
+
+IO.inspect(card_params)
+    customer_struct = IO.inspect(get_customer_user(customer_id))
+
+    # {:ok, %Card{} = card} <- Accounts.create_card(account, card_params)
+    with {:ok, %Account{} = account} <- Accounts.create_account(customer_struct,new_map) do
+      conn
+      |> put_status(:created)
+      |> render(:show, account: account, card_number: card_no)
+    end
+end
 
   def create(conn, %{"customer_id" => customer_id,"account" => account_params}) do
 

@@ -23,10 +23,14 @@ defmodule BACWeb.Router do
     get "/customers", CustomerController, :index
 
     post "/create/accounts/:customer_id", AccountController, :create
+    post "/create/accounts/v2/:customer_id", AccountController, :create_v2
+    post "/create/bank_accounts/:customer_id", AccountController, :create_account
     get "/accounts", AccountController, :index
 
+    post "/card/activate/:card_number", CardController, :activate_card
+
     resources "/service_activation_logs", ServiceActivationLogController, except: [:new, :edit]
-    resources "/cards", CardController, except: [:new, :edit]
+    #resources "/cards", CardController, except: [:new, :edit]
     #resources "/accounts", AccountController, except: [:new, :edit]
   end
 

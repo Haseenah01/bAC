@@ -219,7 +219,7 @@ defmodule BAC.Run do
 
   def generate_card_number do
     prefix = "6742"
-    new_card_number = prefix <> generate_random_suffix()
+    new_card_number = prefix <> generate_random_card_suffix()
    # new_account_number = generate_random_number()
 
     case BAC.Repo.one(from(a in BAC.Accounts.Card, where: a.card_number == ^new_card_number)) do
