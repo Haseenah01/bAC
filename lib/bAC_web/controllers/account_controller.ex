@@ -78,7 +78,7 @@ IO.inspect(card_params)
     with {:ok, %Account{} = account} <- Accounts.create_account(customer_struct,new_map) do
       conn
       |> put_status(:created)
-      |> render(:show, account: account, card_number: card_no)
+      |> render(:show_acc_number, account: account, card_number: card_no)
     end
 end
 
