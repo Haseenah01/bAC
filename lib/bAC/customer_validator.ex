@@ -37,7 +37,7 @@ defmodule BAC.CustomerValidator do
   def verify_email(email) do
     case Regex.match?(@email_regex, email) do
       true ->
-        {:ok, "Email is valid"}
+        {:ok, email}
 
       false ->
         {:error, "Invalid email format"}
@@ -61,4 +61,7 @@ defmodule BAC.CustomerValidator do
   def verify(_), do: {:error, "Invalid phone number"}
 
 
+  def all_validations() do
+
+  end
 end

@@ -1,23 +1,55 @@
 defmodule BAC.Run do
 
-  def hata do
 
+  import Ecto.Query, warn: false
+  alias BAC.Repo
+
+  def hata do
+    :ok = Oban.Notifier.listen([:my_app_jobs])
     customer_params =  %{
 
-          "email": "kk@gmail.com",
+          "email": "amu1111111@gmail.com",
           "dateOfBirth": "2000-10-22",
-          "idNumber": "8830041212541",
+          "idNumber": "5811111121211",
           "firstName": "Hataluli",
           "lastName": "Randima",
-          "phoneNumber": "13624245231"}
+          "phoneNumber": "511134114511"}
 
           # customer_params
           # |> BAC.Workers.CreateCustomerWorker.new()
           # |> Oban.insert()
           # |> Oban.await(15_000)
 
-    Oban.insert(BAC.Workers.CreateCustomerWorker.new(%{"customer" => customer_params}))
+          {:ok, %{id: job_id, state: my_state} = job} = Oban.insert(BAC.Workers.CreateCustomerWorker.new(%{"customer" => customer_params}))
 
+IO.puts("ANOITHER #{my_state}")
+    receive do
+      {:notification, :my_app_jobs, %{"complete" => ^job_id,"stat" => my_state}} ->
+        lasa = IO.inspect(Oban.Job
+        |> where([j], j.id == ^job_id)
+        |> group_by(:state)
+        |> select([j], {j.state})
+        |> BAC.Repo.one())
+
+        IO.puts("ANOITHER #{my_state}")
+        IO.puts("Other job complete!  #")
+    after
+      30_000 ->
+
+        IO.puts("ANOITHER #{my_state}")
+        IO.puts("Other job didn't finish in 30 seconds!")
+    end
+
+  end
+
+  def mama(id) do
+   lasa = IO.inspect(Oban.Job
+    |> where([j], j.id == ^id)
+    |> group_by(:state)
+    |> select([j], {j.state})
+    |> BAC.Repo.one())
+
+    lasa
   end
 
 #   def verify_id_date_of_birth() do

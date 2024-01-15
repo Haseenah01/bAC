@@ -12,7 +12,7 @@ defmodule BAC.Workers.CreateCustomerWorker do
 
 
   @impl true
-  def perform(%Oban.Job{args: %{"customer" => customer_params}}) do
+  def perform(%Oban.Job{args: %{"customer" => customer_params}} = job) do
     IO.puts("HATALULIHATALULIHATALULI")
     email_stru = Map.get(customer_params, "email")
   IO.inspect(email_stru)
@@ -34,6 +34,11 @@ defmodule BAC.Workers.CreateCustomerWorker do
       # )
       # ObMailer.deliver_now(email)
      # IO.inspect(customer)
+
+     IO.inspect(job.state)
+
+     Oban.Notifier.notify(Oban, :my_app_jobs, %{complete: job.id, stat: job.state})
+
       {:ok, customer}
 
     else
