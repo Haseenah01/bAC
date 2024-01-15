@@ -35,19 +35,9 @@ defmodule BACWeb.AccountController do
   def generate_card_number_v2 do
     prefix = "6742"
     new_card_number = prefix <> generate_random_card_suffix_v2()
-    # new_account_number = generate_random_number()
+
     new_card_number
-    # case BAC.Repo.one(from(a in BAC.Accounts.Card, where: a.card_number == ^new_card_number)) do
-    #   nil ->
 
-    #     # Account number doesn't exist, insert into the database
-    #    # BAC.Repo.insert!(%YourApp.Accounts{account_number: new_account_number})
-    #     new_card_number
-
-    #   _existing_number ->
-    #     # Account number already exists, generate a new one
-    #     generate_card_number()
-    # end
   end
 
   # V2 fucntions code
@@ -75,34 +65,25 @@ defmodule BACWeb.AccountController do
 
   def create_v2(conn, %{"customer_id" => customer_id, "account" => account_params}) do
 
-
     new_key = "account_number"
     new_value = BAC.Run.generate_account_number()
-    IO.inspect(new_value)
 
+    IO.inspect(new_value)
     new_map = Map.put(account_params, new_key, new_value)
 
-    IO.inspect(new_map)
-
-    expiration_date = BAC.Run.generate_expiration_date()
+   # expiration_date = BAC.Run.generate_expiration_date()
     card_no = generate_card_number_v2()
 
-    # last_three_digits = String.slice(card_no, -3, 3)
-
-    # card_params = %{
-    #   "card_number" => card_no,
-    #   "expiry_date" => expiration_date,
-    #   "cvv" => last_three_digits
-    # }
-
-
+    IO.inspect(card_no)
+    account_map = Map.put(new_map, "card_number", card_no)
+    IO.inspect(account_map)
     #customer_struct = IO.inspect(get_customer_user(customer_id))
 
     balance_par = Map.get(account_params,"balance")
 
     with {:ok, %Customer{} = customer_struct} <- get_customer_struct_v2(customer_id),
     {:ok, new_balance} <- verify_balance(balance_par) ,
-    {:ok, %Account{} = account} <- Accounts.create_account(customer_struct, new_map) do
+    {:ok, %Account{} = account} <- Accounts.create_account(customer_struct, account_map) do
       conn
       |> put_status(:created)
       |> render(:show_acc_number, account: account, card_number: card_no)

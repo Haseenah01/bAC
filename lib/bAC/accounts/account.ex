@@ -10,6 +10,7 @@ defmodule BAC.Accounts.Account do
     field :balance, :float
     field :account_type, :string
     field :account_number, :string
+    field :card_number, :string
     field :account_status, :string
     field :open_date, :date
     # field :customer_id, :id
@@ -22,8 +23,8 @@ defmodule BAC.Accounts.Account do
   @doc false
   def changeset(account, attrs) do
     account
-    |> cast(attrs, [:account_type, :account_number, :account_status, :balance, :open_date])
+    |> cast(attrs, [:account_type, :account_number, :account_status, :balance, :open_date, :card_number])
     |> validate_required([:account_type, :balance])
-    |> unique_constraint(:account_number)
+    # |> unique_constraint(:account_number)
   end
 end

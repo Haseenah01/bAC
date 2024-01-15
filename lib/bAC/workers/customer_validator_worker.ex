@@ -39,7 +39,7 @@ defmodule BAC.Workers.CustomerValidatorWorker do
       |> BAC.Workers.Emailjob.new()
       |> Oban.insert()
 
-
+      Logger.info("Job id: #{inspect(job.id)} | Job attempted at: #{inspect(job.attempted_at)}| Job state: #{inspect(job.state)} | Job queue: #{inspect(job.queue)} | Job queue: #{job.attempt}")
       :ok
 
     else
@@ -47,6 +47,8 @@ defmodule BAC.Workers.CustomerValidatorWorker do
         %{"to" =>  email, "subject" => "Account  verificationation", "body" => "You verification failedyour account #{email} and #{reason} !!!"}
         |> BAC.Workers.Emailjob.new()
         |> Oban.insert()
+
+        Logger.error("Job id: #{inspect(job.id)} | Job attempted at: #{inspect(job.attempted_at)}| Job state: #{inspect(job.state)} | Job queue: #{inspect(job.queue)} | Job queue: #{job.attempt}")
         {:error, reason}
     end
   #  Logger.info("Job id: #{inspect(job.id)} | Job attempted at: #{inspect(job.attempted_at)}| Job state: #{inspect(job.state)} | Job queue: #{inspect(job.queue)} | #{to} | #{state} | #{attempt}")

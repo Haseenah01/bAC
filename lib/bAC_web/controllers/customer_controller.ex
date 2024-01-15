@@ -11,26 +11,28 @@ defmodule BACWeb.CustomerController do
     render(conn, :index, customers: customers)
   end
 
-  def create(conn, %{"customer" => customer_params}) do
+  # def create(conn, %{"customer" => customer_params}) do
 
-    with {:ok, customer_par} <- Oban.insert(BAC.Workers.CreateCustomerWorker.new(%{"customer" => customer_params})) do
-      IO.inspect(customer_par)
+  #   with {:ok, customer_par} <- Oban.insert(BAC.Workers.CreateCustomerWorker.new(%{"customer" => customer_params})) do
+  #     IO.inspect(customer_par)
+  #     conn
+  #     |> put_status(:created)
+  #     # |> put_resp_header("location", ~p"/api/customers/#{customer}")
+  #     |> render(:show11, customer: "customer")
+  #   end
+  # end
+
+
+  def create(conn, %{"customer" => customer_params}) do
+    with {:ok, %Customer{} = customer} <- Customers.create_customer(customer_params) do
       conn
       |> put_status(:created)
       # |> put_resp_header("location", ~p"/api/customers/#{customer}")
-      |> render(:show11, customer: "customer")
+      |> render(:show, customer: customer)
     end
   end
 
 
-  # def create(conn, %{"customer" => customer_params}) do
-  #   with {:ok, %Customer{} = customer} <- Customers.create_customer(customer_params) do
-  #     conn
-  #     |> put_status(:created)
-  #     # |> put_resp_header("location", ~p"/api/customers/#{customer}")
-  #     |> render(:show, customer: customer)
-  #   end
-  # end
   def show(conn, %{"id" => id}) do
     customer = Customers.get_customer!(id)
     render(conn, :show, customer: customer)

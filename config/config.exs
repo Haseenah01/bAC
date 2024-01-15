@@ -24,7 +24,7 @@ config :bAC, Oban,
     #    {"@daily", TsOban.StatisticsGenerator}
     #  ]}
   ],
-  queues: [default: 10, valid: 12,scheduled: 10, crato: 25 events: [limit: 20, dispatch_cooldown: 10]]
+  queues: [default: 10, valid: 12,scheduled: 10, crato: 25, events: [limit: 20, dispatch_cooldown: 10]]
 
 
 # Configures the endpoint

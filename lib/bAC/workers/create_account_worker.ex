@@ -18,7 +18,7 @@ defmodule BAC.Workers.CreateAccountWorker do
     {:ok, %Customer{} = customer_struct} <- get_customer_struct_v2(customer_id),
     {:ok, %Account{} = account} <- Accounts.create_account(customer_struct,account_params) do
 
-      %{"to" =>  customer.email, "subject" => "Account Registration", "body" => "You have suscceful registered your account #{customer_struct.email}  this is your id you will use #{customer_struct.id}!!!"}
+      %{"to" =>  customer_struct.email, "subject" => "Account Registration", "body" => "You have suscceful registered your account #{customer_struct.email}  this is your id you will use #{customer_struct.id}!!!"}
       |> BAC.Workers.Emailjob.new()
       |> Oban.insert()
 

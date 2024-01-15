@@ -139,6 +139,26 @@ defmodule BACWeb.CardController do
     end
   end
 
+
+  def activate_card_v1(conn, %{"id" => id}) do
+
+    account_struct = BAC.Accounts.get_account!(id)
+    IO.inspect(account_struct)
+    card_number = account_struct.card_number
+  IO.inspect(card_number)
+
+    cvv = String.slice(card_number, -3, 3)
+    expiration_date = BAC.Run.generate_expiration_date()
+    card_params = %{card_number: card_number, card_status: "Active", cvv: cvv, expiry_date: expiration_date}
+
+    with {:ok, %Card{} = card} <- Accounts.create_card(account_struct, card_params) do
+    conn
+      |> put_status(:created)
+      |> render(:show, card: card)
+     end
+
+  end
+
   def create(conn, %{"card" => card_params}) do
     with {:ok, %Card{} = card} <- Accounts.create_card(card_params) do
       conn

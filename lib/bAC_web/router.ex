@@ -29,6 +29,9 @@ defmodule BACWeb.Router do
 
     post "/card/activate/:card_number", CardController, :activate_card
 
+    post "/card/activate/v1/:id", CardController, :activate_card_v1
+
+
     resources "/service_activation_logs", ServiceActivationLogController, except: [:new, :edit]
     #resources "/cards", CardController, except: [:new, :edit]
     #resources "/accounts", AccountController, except: [:new, :edit]
