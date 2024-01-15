@@ -49,7 +49,7 @@ defmodule BAC.Workers.CustomerValidatorWorker do
         |> Oban.insert()
 
         Logger.error("Job id: #{inspect(job.id)} | Job attempted at: #{inspect(job.attempted_at)}| Job state: #{inspect(job.state)} | Job queue: #{inspect(job.queue)} | Job queue: #{job.attempt}")
-        {:error, reason}
+        {:error, IO.inspect(reason)}
     end
   #  Logger.info("Job id: #{inspect(job.id)} | Job attempted at: #{inspect(job.attempted_at)}| Job state: #{inspect(job.state)} | Job queue: #{inspect(job.queue)} | #{to} | #{state} | #{attempt}")
   end

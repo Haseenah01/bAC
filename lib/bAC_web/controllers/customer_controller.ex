@@ -24,11 +24,14 @@ defmodule BACWeb.CustomerController do
 
 
   def create(conn, %{"customer" => customer_params}) do
-    with {:ok, %Customer{} = customer} <- Customers.create_customer(customer_params) do
-      conn
-      |> put_status(:created)
-      # |> put_resp_header("location", ~p"/api/customers/#{customer}")
-      |> render(:show, customer: customer)
+    with {:ok, customer_par} <- Oban.insert(BAC.Workers.CreateCustomerV2Worker.new(%{"customer" => customer_params})) do
+        # {:ok, %Customer{} = customer} <- Customers.create_customer(customer_params) do
+         conn
+        |> put_status(:created)
+        # |> put_resp_header("location", ~p"/api/customers/#{customer}")
+        |> render(:show11, customer: "customer")
+    else
+      {:error, reason} -> {:error, IO.inspect(reason)}
     end
   end
 
