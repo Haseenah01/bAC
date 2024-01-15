@@ -15,7 +15,6 @@ defmodule BACWeb.ServiceActivationLogController do
     with {:ok, %ServiceActivationLog{} = service_activation_log} <- Accounts.create_service_activation_log(service_activation_log_params) do
       conn
       |> put_status(:created)
-      |> put_resp_header("location", ~p"/api/service_activation_logs/#{service_activation_log}")
       |> render(:show, service_activation_log: service_activation_log)
     end
   end

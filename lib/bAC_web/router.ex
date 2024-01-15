@@ -27,11 +27,9 @@ defmodule BACWeb.Router do
     post "/create/bank_accounts/:customer_id", AccountController, :create_account
     get "/accounts", AccountController, :index
 
-    post "/card/activate/:card_number", CardController, :activate_card
+    post "/card/activate/:id", CardController, :activate_card
 
     resources "/service_activation_logs", ServiceActivationLogController, except: [:new, :edit]
-    #resources "/cards", CardController, except: [:new, :edit]
-    #resources "/accounts", AccountController, except: [:new, :edit]
   end
 
   if Mix.env == :dev do

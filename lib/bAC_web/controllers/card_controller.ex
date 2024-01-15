@@ -3,7 +3,6 @@ defmodule BACWeb.CardController do
 
   alias BAC.Accounts
   alias BAC.Accounts.Card
-  alias BAC.Customers.Customer
   alias BAC.Accounts.Account
 
 
@@ -21,7 +20,7 @@ defmodule BACWeb.CardController do
 
   def get_me_account_struct(id) do
     case get_account_bank(id) do
-      nil -> {:error, "Account doesnt exist in the system"}
+      nil -> {:error, "Account doesn't exist in the system"}
       account -> {:ok,account}
     end
   end
@@ -34,11 +33,6 @@ defmodule BACWeb.CardController do
     |> Repo.one()
   end
 
-  #check length of card number if its right the regenate the new one
-
-  # make a cvv
-
-  # combine all the card params now
 
 
   defp generate_random_card_suffix do
@@ -71,7 +65,7 @@ defmodule BACWeb.CardController do
         IO.puts("You can verify")
         {:ok,card_number}
        # {:ok, "You can verify"}
-      card ->
+      _card ->
         IO.puts("Generating new card number")
         generate_card_number()
        # {:error, "Already exist within the system"}
@@ -108,42 +102,31 @@ defmodule BACWeb.CardController do
    {:ok, card_params_new }
   end
 
-  def activate_card(conn, %{"card_number" => card_number,"card" => card_params}) do
+  def activate_card(conn, %{"id" => id}) do
 
-    # must provide customer id
-    account_single = Map.get(card_params,"account_id")
+    account_struct = BAC.Accounts.get_account!(id)
+    card_number = account_struct.card_number
 
-    # Have to put this and do some pattern match
-  # customer_struct = IO.inspect(get_customer_user(customer_single))
 
-   # Verify that card number if exist on database
+    cvv = String.slice(card_number, -3, 3)
+    expiration_date = BAC.Run.generate_expiration_date()
+    card_params = %{card_number: card_number, card_status: "Active", cvv: cvv, expiry_date: expiration_date}
 
-   # Verify if that account number has right number of length
-
-   # Take last 3 digist and make it cvv
-
-   # Have last function that will combine everything and make card params
-
-    with {:ok, %Account{} = acc_str} <- get_me_account_struct(account_single),
-      {:ok,new_card_num} <- verify_card_number(card_number),
-      {:ok,new_cvv} <- gen_cvv(new_card_num),
-      {:ok, new_exp} <- generate_expiration_date_now(),
-      {:ok,params_card }<- gen_new_card_params(new_card_num,new_exp,new_cvv),
-     {:ok, %Card{} = card} <- Accounts.create_card(acc_str,params_card) do
-      conn
+    with {:ok, %Card{} = card} <- Accounts.create_card(account_struct, card_params) do
+    conn
       |> put_status(:created)
-      #|> put_resp_header("location", ~p"/api/cards/#{card}")
       |> render(:show, card: card)
-    else
-      {:error, reason} -> {:error, IO.inspect(reason)}
-    end
+     end
+
   end
 
   def create(conn, %{"card" => card_params}) do
+
+
+
     with {:ok, %Card{} = card} <- Accounts.create_card(card_params) do
       conn
       |> put_status(:created)
-      #|> put_resp_header("location", ~p"/api/cards/#{card}")
       |> render(:show, card: card)
     end
   end

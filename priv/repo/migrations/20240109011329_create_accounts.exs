@@ -5,6 +5,7 @@ defmodule BAC.Repo.Migrations.CreateAccounts do
     create table(:accounts, primary_key: false) do
       add :id, :uuid, primary_key: true
       add :account_type, :string
+      add :card_number, :string
       add :account_number, :string
       add :account_status, :string, default: "NotVerified", null: false
       add :balance, :float
