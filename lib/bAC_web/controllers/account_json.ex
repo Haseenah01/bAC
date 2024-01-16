@@ -10,6 +10,11 @@ defmodule BACWeb.AccountJSON do
     %{data: for(account <- accounts, do: data(account))}
   end
 
+
+  def show11(%{account: "account"}) do
+    %{account: "account"}
+  end
+
   @doc """
   Renders a single account.
   """

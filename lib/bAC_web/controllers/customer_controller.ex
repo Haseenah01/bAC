@@ -22,17 +22,57 @@ defmodule BACWeb.CustomerController do
   #   end
   # end
 
+  def test_work(customer_params) do
+    {:ok, job} = Oban.insert(BAC.Workers.CustomerValidatorWorker.new(%{"customer" => customer_params}))
+  end
 
   def create(conn, %{"customer" => customer_params}) do
-    with {:ok, customer_par} <- Oban.insert(BAC.Workers.CreateCustomerV2Worker.new(%{"customer" => customer_params})) do
-        # {:ok, %Customer{} = customer} <- Customers.create_customer(customer_params) do
-         conn
-        |> put_status(:created)
-        # |> put_resp_header("location", ~p"/api/customers/#{customer}")
-        |> render(:show11, customer: "customer")
+    # job_id1 = 1
+    with {:ok, job} <- Oban.insert(BAC.Workers.CustomerValidatorWorker.new(%{"customer" => customer_params})) do
+        IO.puts("CustomerValidatorWorker enqueued successfully")
+          conn
+          |> put_status(:created)
+          |> render(:show11, customer: "customer")
     else
-      {:error, reason} -> {:error, IO.inspect(reason)}
+      {:error, reason} ->
+        IO.puts("CustomerValidatorWorker enqueue failed: #{reason}")
     end
+
+     # Enqueue CustomerValidatorWorker
+    #  case test_work(customer_params) do
+    #   {:ok, job} ->
+    #     IO.inspect(job)
+    #     IO.puts("Enqueue CreateCustomerV2Worker")
+    #     conn
+    #         |> put_status(:created)
+    #         |> render(:show11, customer: "customer")
+    #     # case Oban.insert(BAC.Workers.CreateCustomerV2Worker.new(%{"customer" => customer_params})) do
+    #     #   {:ok, _} ->
+    #     #     # Your remaining controller logic
+    #     #     conn
+    #     #     |> put_status(:created)
+    #     #     |> render(:show11, customer: "customer")
+
+    #     #   {:error, reason} ->
+    #     #     IO.puts("CreateCustomerV2Worker enqueue failed: #{reason}")
+    #     #     # conn
+    #     #     # |> put_status(:internal_server_error)
+    #     #     # |> render("error_template.html")
+    #     # end
+
+    #   {:error, reason} ->
+    #     IO.puts("CustomerValidatorWorker enqueue failed: #{reason}")
+    # end
+
+    #with {:ok, customer_par} <- Oban.insert(BAC.Workers.CustomerValidatorWorker.new(%{"customer" => customer_params})),
+    # with {:ok, _customer_par} <- Oban.insert(BAC.Workers.CreateCustomerV2Worker.new(%{"customer" => customer_params})) do
+    #      conn
+    #     |> put_status(:created)
+    #     # |> put_resp_header("location", ~p"/api/customers/#{customer}")
+    #     |> render(:show11, customer: "customer")
+    # else
+    #   {:error, reason} -> {:error, IO.inspect(reason)}
+    # end
   end
 
 

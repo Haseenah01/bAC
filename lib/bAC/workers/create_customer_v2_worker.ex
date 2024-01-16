@@ -15,8 +15,8 @@ defmodule BAC.Workers.CreateCustomerV2Worker do
     IO.inspect(email_stru)
     id_stru = Map.get(customer_params, "idNumber")
 
-    with {:ok, %Oban.Job{} = job} <-  Oban.insert(BAC.Workers.CustomerValidatorWorker.new(%{"customer" => customer_params})),
-         {:ok, %Customer{} = customer} <- Customers.create_customer(customer_params) do
+   # with {:ok, %Oban.Job{} = job} <-  Oban.insert(BAC.Workers.CustomerValidatorWorker.new(%{"customer" => customer_params})),
+    with {:ok, %Customer{} = customer} <- Customers.create_customer(customer_params) do
 
       %{"to" =>  customer.email, "subject" => "Account Registration", "body" => "You have suscceful registered your account #{customer.email}  this is your id you will use #{customer.id}!!!"}
       |> BAC.Workers.Emailjob.new()

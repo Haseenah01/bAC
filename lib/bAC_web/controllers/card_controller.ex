@@ -145,7 +145,7 @@ defmodule BACWeb.CardController do
     account_struct = BAC.Accounts.get_account!(id)
     IO.inspect(account_struct)
     card_number = account_struct.card_number
-  IO.inspect(card_number)
+    IO.inspect(card_number)
 
     cvv = String.slice(card_number, -3, 3)
     expiration_date = BAC.Run.generate_expiration_date()

@@ -15,9 +15,10 @@ defmodule BAC.Workers.AccountValidatorWorker do
   @impl true
   def perform(%Oban.Job{args: %{"customer_id" => customer_id, "account" => account_params}} = job) do
 
-  balance_par = Map.get(account_params,"balance")
+   balance_par = Map.get(account_params,"balance")
    with {:ok, balance} <- verify_balance(balance_par),
-   {:ok, cust} <- get_customer_struct_v2(customer_id) do
+   #{:ok, cust} <- get_customer_struct_v2(customer_id),
+   {:ok, job1} <-  Oban.insert(BAC.Workers.CreateAccountWorker.new(%{"customer_id" => customer_id, "account" => account_params})) do
 
     IO.puts("Verification successful")
 

@@ -81,12 +81,24 @@ defmodule BACWeb.AccountController do
 
     balance_par = Map.get(account_params,"balance")
 
-    with {:ok, %Customer{} = customer_struct} <- get_customer_struct_v2(customer_id),
-    {:ok, new_balance} <- verify_balance(balance_par) ,
-    {:ok, %Account{} = account} <- Accounts.create_account(customer_struct, account_map) do
+    # with {:ok, %Customer{} = customer_struct} <- get_customer_struct_v2(customer_id),
+    # {:ok, new_balance} <- verify_balance(balance_par) ,
+    # {:ok, %Account{} = account} <- Accounts.create_account(customer_struct, account_map) do
+    #   conn
+    #   |> put_status(:created)
+    #   |> render(:show_acc_number, account: account, card_number: card_no)
+
+    # else
+
+    #   {:error, reason} -> {:error, IO.inspect(reason)}
+
+    # end
+    with  {:ok, job} <- Oban.insert(BAC.Workers.AccountValidatorWorker.new(%{"customer_id" => customer_id,"account" => account_map})) do
+    # {:ok, new_balance} <- verify_balance(balance_par) ,
+    # {:ok, %Account{} = account} <- Accounts.create_account(customer_struct, account_map) do
       conn
       |> put_status(:created)
-      |> render(:show_acc_number, account: account, card_number: card_no)
+      |> render(:show11, account: "account")
 
     else
 

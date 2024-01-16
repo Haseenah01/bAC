@@ -6,7 +6,7 @@ defmodule BAC.Workers.CustomerValidatorWorker do
 
   import Bamboo.Email
 
-  use Oban.Worker, queue: :valid, max_attempts: 2, tags: ["customer", "validation"]
+  use Oban.Worker, queue: :valid, priority: 3, max_attempts: 2, tags: ["customer", "validation"]
 
   @impl true
   def perform(%Oban.Job{args: %{"customer" => customer_params}} = job) do
@@ -24,23 +24,16 @@ defmodule BAC.Workers.CustomerValidatorWorker do
 
     with {:ok, _message1} <- BAC.CustomerValidator.verify_id_number(id),
          {:ok, cust_email} <- BAC.CustomerValidator.verify_email(email),
-         {:ok, _m} <- BAC.CustomerValidator.verify(phoneNumber) do
-
-      # email = new_email(
-      #   to: cust_email,
-      #   from: "bac@support.com",
-      #   subject: "Customer Verification",
-      #   text_body: "You have suscceful registered your account #{cust_email} !!!"
-      # )
-      # ObMailer.deliver_now(email)
+         {:ok, _m} <- BAC.CustomerValidator.verify(phoneNumber),
+         {:ok, job} <- Oban.insert(BAC.Workers.CreateCustomerV2Worker.new(%{"customer" => customer_params})) do
 
 
       %{"to" =>  cust_email, "subject" => "Customer Verification", "body" => "You have suscceful registered your account #{cust_email} !!!"}
       |> BAC.Workers.Emailjob.new()
       |> Oban.insert()
 
-      Logger.info("Job id: #{inspect(job.id)} | Job attempted at: #{inspect(job.attempted_at)}| Job state: #{inspect(job.state)} | Job queue: #{inspect(job.queue)} | Job queue: #{job.attempt}")
-      :ok
+      Logger.info("hata Job id: #{inspect(job.id)} | Job attempted at: #{inspect(job.attempted_at)}| Job state: #{inspect(job.state)} | Job queue: #{inspect(job.queue)} | Job queue: #{job.attempt}")
+      # :ok
 
     else
       {:error, reason} ->
@@ -51,6 +44,6 @@ defmodule BAC.Workers.CustomerValidatorWorker do
         Logger.error("Job id: #{inspect(job.id)} | Job attempted at: #{inspect(job.attempted_at)}| Job state: #{inspect(job.state)} | Job queue: #{inspect(job.queue)} | Job queue: #{job.attempt}")
         {:error, IO.inspect(reason)}
     end
-  #  Logger.info("Job id: #{inspect(job.id)} | Job attempted at: #{inspect(job.attempted_at)}| Job state: #{inspect(job.state)} | Job queue: #{inspect(job.queue)} | #{to} | #{state} | #{attempt}")
+
   end
 end
