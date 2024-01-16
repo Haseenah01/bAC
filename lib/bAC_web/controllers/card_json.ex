@@ -15,6 +15,10 @@ defmodule BACWeb.CardJSON do
     %{data: data(card)}
   end
 
+  def show11(%{card: "card"}) do
+    %{card: "card"}
+  end
+
   defp data(%Card{} = card) do
     %{
       id: card.id,

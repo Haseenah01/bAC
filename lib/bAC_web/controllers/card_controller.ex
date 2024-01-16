@@ -142,6 +142,7 @@ defmodule BACWeb.CardController do
 
   def activate_card_v1(conn, %{"id" => id}) do
 
+    IO.inspect(id)
     account_struct = BAC.Accounts.get_account!(id)
     IO.inspect(account_struct)
     card_number = account_struct.card_number
@@ -151,10 +152,12 @@ defmodule BACWeb.CardController do
     expiration_date = BAC.Run.generate_expiration_date()
     card_params = %{card_number: card_number, card_status: "Active", cvv: cvv, expiry_date: expiration_date}
 
-    with {:ok, %Card{} = card} <- Accounts.create_card(account_struct, card_params) do
+    with {:ok, job} <- Oban.insert(BAC.Workers.CardValidatorWorker.new(%{"id" => id})) do
+    #{:ok, %Card{} = card} <- Accounts.create_card(account_struct, card_params) do
+      IO.puts("Musanda")
     conn
       |> put_status(:created)
-      |> render(:show, card: card)
+      |> render(:show11, card: "card")
      end
 
   end
