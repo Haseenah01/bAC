@@ -7,6 +7,8 @@ defmodule BAC.Application do
 
   @impl true
   def start(_type, _args) do
+    :ok = Oban.Pro.Worker.attach_hook(BAC.WorkerHooks.ErrorHook )
+
     children = [
       # Start the Telemetry supervisor
       BACWeb.Telemetry,

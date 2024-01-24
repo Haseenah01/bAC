@@ -53,7 +53,10 @@ defmodule BAC.MixProject do
       {:oban, "~> 2.16"},
       {:bamboo, "~> 2.3.0"},
       {:logger_file_backend, "~> 0.0.10"},
-      {:oban_live_dashboard, "~> 0.1.0"}
+      {:oban_live_dashboard, "~> 0.1.0"},
+      {:oban_pro, "~> 1.1", repo: "oban"},
+      {:oban_web, "~> 2.10", repo: "oban"},
+      {:oban_met, "~> 0.1", repo: :oban}
     ]
   end
 

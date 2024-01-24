@@ -1,6 +1,9 @@
 defmodule BACWeb.Router do
   use BACWeb, :router
 
+  import Oban.Web.Router
+
+
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
@@ -22,6 +25,10 @@ defmodule BACWeb.Router do
     post "/customers/create", CustomerController, :create
     get "/customers", CustomerController, :index
 
+    # Pro staff
+    post "/customers/create/pro", CustomerProController, :create_pro
+    get "/customers/pro", CustomerProController, :index
+
     post "/create/accounts/:customer_id", AccountController, :create
     post "/create/accounts/v2/:customer_id", AccountController, :create_v2
     post "/create/bank_accounts/:customer_id", AccountController, :create_account
@@ -33,6 +40,8 @@ defmodule BACWeb.Router do
 
 
     resources "/service_activation_logs", ServiceActivationLogController, except: [:new, :edit]
+
+
     #resources "/cards", CardController, except: [:new, :edit]
     #resources "/accounts", AccountController, except: [:new, :edit]
   end
@@ -61,6 +70,10 @@ defmodule BACWeb.Router do
 
     scope "/dev" do
       pipe_through :browser
+
+
+      oban_dashboard "/oban"
+
 
       live_dashboard "/dashboard",
       additional_pages: [

@@ -1,5 +1,6 @@
 defmodule BAC.CustomerValidator do
-
+  import Ecto.Query, warn: false
+  alias BAC.Repo
 
   @email_regex ~r/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
 
@@ -61,7 +62,72 @@ defmodule BAC.CustomerValidator do
   def verify(_), do: {:error, "Invalid phone number"}
 
 
-  def all_validations() do
+  defp get_customer_v2(id), do: Repo.get(Customer, id)
+
+  def get_customer_struct_v2(id) do
+    case get_customer_v2(id) do
+      nil -> {:error, "This customer doesnt exist in our system."}
+      customer -> {:ok, customer}
+    end
+  end
+
+
+  def check_email(email) do
+    case BAC.Repo.get_by(BAC.Customers.Customer, email: email) do
+      nil ->
+        # Email doesn't exist, you can proceed with your logic here
+        {:ok, "Email does not exist."}
+
+      _user ->
+        # Email already exists in the database, raise an error or handle accordingly
+        {:error, "Email already exists."}
+    end
+  end
+
+  # def all_validations() do
+
+  # end
+
+  def procheck do
+
+
+    customer_params =  %{
+      "email": "amu1000@gmail.com",
+      "dateOfBirth": "2000-10-22",
+      "idNumber": "5811111121211",
+      "firstName": "Hataluli",
+      "lastName": "Randima",
+      "phoneNumber": "0727941660"}
+
+
+      email = customer_params.email
+     IO.inspect(email)
+
+
+      email_stru = Map.get(customer_params, "email")
+      IO.inspect(email_stru)
+      IO.puts "Hello"
+
+    #   with {:ok, message}<- check_email(email) do
+
+    #     BAC.Workers.CustomerValidatorWorkerPro.new_workflow()
+    #   |> BAC.Workers.CustomerValidatorWorkerPro.add(:a, BAC.Workers.CustomerValidatorWorkerPro.new(%{"customer" => customer_params}))
+    #   |> BAC.Workers.CustomerValidatorWorkerPro.add(:b, BAC.Workers.CreateCustomerV2WorkerPro.new(%{"customer" => customer_params}), deps: [:a])
+    #   |> BAC.Workers.CustomerValidatorWorkerPro.add(:c, BAC.Workers.EmailjobPro1.new(%{"customer" => customer_params}), deps: [:b])
+    #   |> Oban.insert_all()
+    #   |> IO.inspect()
+
+    # else
+    #   {:error, reason} ->
+    #     {:error, IO.inspect(reason)}
+    # end
+
+      BAC.Workers.CustomerValidatorWorkerPro.new_workflow()
+      |> BAC.Workers.CustomerValidatorWorkerPro.add(:a, BAC.Workers.CustomerValidatorWorkerPro.new(%{"customer" => customer_params}))
+      |> BAC.Workers.CustomerValidatorWorkerPro.add(:b, BAC.Workers.CreateCustomerV2WorkerPro.new(%{"customer" => customer_params}), deps: [:a])
+      |> BAC.Workers.CustomerValidatorWorkerPro.add(:c, BAC.Workers.EmailjobPro1.new(%{"customer" => customer_params}), deps: [:b])
+      |> Oban.insert_all()
+      |> IO.inspect()
 
   end
 end

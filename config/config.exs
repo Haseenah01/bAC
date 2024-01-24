@@ -11,9 +11,12 @@ config :bAC,
   ecto_repos: [BAC.Repo]
 
 config :bAC, Oban,
+  engine: Oban.Pro.Engines.Smart,
+  notifier: Oban.Notifiers.PG,
   repo: BAC.Repo,
   plugins: [
-    Oban.Plugins.Pruner,
+    {Oban.Pro.Plugins.DynamicPruner, mode: {:max_age, {2, :days}}},
+    #Oban.Plugins.Pruner,
     # {Oban.Plugins.Cron,
     #  crontab: [
     #    {"* * * * *", TsOban.StatisticsGenerator},

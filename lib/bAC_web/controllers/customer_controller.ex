@@ -27,12 +27,29 @@ defmodule BACWeb.CustomerController do
   end
 
   def create(conn, %{"customer" => customer_params}) do
+
+
+    # relay =
+    #   %{id: 123}
+    #   |> MyApp.Worker.new()
+    #   |> Oban.Pro.Relay.async()
+
+
+    # {:ok, result} =
+    #   %{id: 123}
+    #   |> MyApp.Worker.new()
+    #   |> Oban.Pro.Relay.async()
+    #   |> Oban.Pro.Relay.await()
+
+    #   {:ok, result} = Oban.Pro.Relay.await(relay, :timer.seconds(30))
+
     # job_id1 = 1
-    with {:ok, job} <- Oban.insert(BAC.Workers.CustomerValidatorWorker.new(%{"customer" => customer_params})) do
+    #with {:ok, customer} <- Oban.insert(BAC.Workers.CreateCustomerV2Worker.new(%{"customer" => customer_params})) do
+    with {:ok, customer} <- Oban.Pro.Relay.await(Oban.Pro.Relay.async(BAC.Workers.CreateCustomerV2Worker.new(%{"customer" => customer_params})), :timer.seconds(30)) do
         IO.puts("CustomerValidatorWorker enqueued successfully")
           conn
           |> put_status(:created)
-          |> render(:show11, customer: "customer")
+          |> render(:show, customer: customer)
     else
       {:error, reason} ->
         IO.puts("CustomerValidatorWorker enqueue failed: #{reason}")
