@@ -1,6 +1,7 @@
 defmodule BAC.CustomerValidator do
   import Ecto.Query, warn: false
   alias BAC.Repo
+  require Logger
 
   @email_regex ~r/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
 
@@ -101,12 +102,13 @@ defmodule BAC.CustomerValidator do
 
 
       email = customer_params.email
-     IO.inspect(email)
+     Logger.info(email)
 
 
       email_stru = Map.get(customer_params, "email")
-      IO.inspect(email_stru)
-      IO.puts "Hello"
+      Logger.info(email_stru)
+
+
 
     #   with {:ok, message}<- check_email(email) do
 
@@ -115,11 +117,11 @@ defmodule BAC.CustomerValidator do
     #   |> BAC.Workers.CustomerValidatorWorkerPro.add(:b, BAC.Workers.CreateCustomerV2WorkerPro.new(%{"customer" => customer_params}), deps: [:a])
     #   |> BAC.Workers.CustomerValidatorWorkerPro.add(:c, BAC.Workers.EmailjobPro1.new(%{"customer" => customer_params}), deps: [:b])
     #   |> Oban.insert_all()
-    #   |> IO.inspect()
+    #   |> Logger.info()
 
     # else
     #   {:error, reason} ->
-    #     {:error, IO.inspect(reason)}
+    #     {:error, Logger.info(reason)}
     # end
 
       BAC.Workers.CustomerValidatorWorkerPro.new_workflow()
@@ -127,7 +129,7 @@ defmodule BAC.CustomerValidator do
       |> BAC.Workers.CustomerValidatorWorkerPro.add(:b, BAC.Workers.CreateCustomerV2WorkerPro.new(%{"customer" => customer_params}), deps: [:a])
       |> BAC.Workers.CustomerValidatorWorkerPro.add(:c, BAC.Workers.EmailjobPro1.new(%{"customer" => customer_params}), deps: [:b])
       |> Oban.insert_all()
-      |> IO.inspect()
+      |> Logger.info()
 
   end
 end

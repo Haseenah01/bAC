@@ -12,7 +12,7 @@ defmodule BAC.Workers.CreateCustomerV2Worker do
   def perform(%Oban.Job{args: %{"customer" => customer_params}} = job) do
 
     email_stru = Map.get(customer_params, "email")
-    IO.inspect(email_stru)
+    Logger.info(email_stru)
     id_stru = Map.get(customer_params, "idNumber")
 
    # with {:ok, %Oban.Job{} = job} <-  Oban.insert(BAC.Workers.CustomerValidatorWorker.new(%{"customer" => customer_params})),
@@ -33,7 +33,7 @@ defmodule BAC.Workers.CreateCustomerV2Worker do
         %{"to" =>  email_stru, "subject" => "Account  registation failed", "body" => "You verification failedyour account #{email_stru} and #{reason} !!!"}
         |> BAC.Workers.Emailjob.new()
         |> Oban.insert()
-        {:error, IO.inspect(reason)}
+        {:error, Logger.info(reason)}
     end
 
 

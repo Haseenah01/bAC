@@ -8,6 +8,7 @@ defmodule BAC.Workers.CardActivationWorker do
   alias BAC.Customers.Customer
   alias BAC.Accounts.Account
 
+  require Logger
   import Ecto.Query, warn: false
   alias BAC.Repo
 
@@ -18,13 +19,13 @@ defmodule BAC.Workers.CardActivationWorker do
   @impl true
   def perform(%Oban.Job{args: %{"id" => id}} = job) do
 
-    IO.puts("start")
+    Logger.info("start")
 
     with {:ok, account_struct} <- get_customer_struct_v2(id),
     {:ok, card_str} <- get_card_no(account_struct),
     {:ok, new_cvv} <- gen_cvv(card_str),
     {:ok, new_exp} <- generate_expiration_date_now(),
-    {:ok, params_card } <- IO.inspect(gen_new_card_params(card_str,new_exp,new_cvv)),
+    {:ok, params_card } <- Logger.info(gen_new_card_params(card_str,new_exp,new_cvv)),
      {:ok, %Card{} = card} <- Accounts.create_card(account_struct, params_card) do
 
     #   %{"to" =>  customer.email, "subject" => "Account Registration", "body" => "You have suscceful registered your account #{customer.email}  this is your id you will use #{customer.id}!!!"}
@@ -32,7 +33,7 @@ defmodule BAC.Workers.CardActivationWorker do
     #   |> Oban.insert()
 
     #  Oban.Notifier.notify(Oban, :bac_jobs, %{complete: job.id})
-     IO.puts("Card activated")
+     Logger.info("Card activated")
      Logger.info("Job id: #{inspect(job.id)} | Job attempted at: #{inspect(job.attempted_at)}| Job state: #{inspect(job.state)} | Job queue: #{inspect(job.queue)} | Worker: #{job.worker}|Job attempt: #{job.attempt}")
 
      {:ok, card}
@@ -42,7 +43,7 @@ defmodule BAC.Workers.CardActivationWorker do
         # %{"to" =>  email_stru, "subject" => "Account  registation failed", "body" => "You verification failedyour account #{email_stru} and #{reason} !!!"}
         # |> BAC.Workers.Emailjob.new()
         # |> Oban.insert()
-        {:error, IO.inspect(reason)}
+        {:error, Logger.info(reason)}
     end
   end
 
@@ -81,7 +82,7 @@ defmodule BAC.Workers.CardActivationWorker do
 
     expiration_date = "#{month_string}/#{year_last_two_digits}"
 
-    IO.puts("Generated Expiration Date: #{expiration_date}")
+    Logger.info("Generated Expiration Date: #{expiration_date}")
 
     {:ok,expiration_date}
   end
@@ -89,7 +90,7 @@ defmodule BAC.Workers.CardActivationWorker do
   def gen_new_card_params(card, exp, cvv) do
     card_params_new = %{"card_number" =>  card , "expiry_date" => exp , "cvv" => cvv }
 
-    IO.puts("its lunch")
+    Logger.info("its lunch")
    {:ok, card_params_new }
   end
 end

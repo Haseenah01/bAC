@@ -28,7 +28,7 @@ defmodule BAC.Workers.CardValidatorWorker do
     # {:ok, card_str} <- get_card_no(account_struct),
     # {:ok, new_cvv} <- gen_cvv(card_str),
     # {:ok, new_exp} <- generate_expiration_date_now(),
-    # {:ok, params_card } <- IO.inspect(gen_new_card_params(card_str,new_exp,new_cvv)),
+    # {:ok, params_card } <- Logger.info(gen_new_card_params(card_str,new_exp,new_cvv)),
      # {:ok, %Card{} = card} <- Accounts.create_card(account_struct, params_card) do
 
 
@@ -38,11 +38,11 @@ defmodule BAC.Workers.CardValidatorWorker do
     # with {:ok, _account_struct} <- get_customer_struct_v2(id) ,
     #      {:ok, _job1} <- Oban.insert(BAC.Workers.CardActivationWorker.new(%{"id" => id})) do
 
-      IO.puts("customer info verified")
+      Logger.info("customer info verified")
 
     else
      {:error, reason} ->
-         {:error, IO.inspect(reason)}
+         {:error, Logger.info(reason)}
     end
 
   end
@@ -82,7 +82,7 @@ defmodule BAC.Workers.CardValidatorWorker do
 
   #   expiration_date = "#{month_string}/#{year_last_two_digits}"
 
-  #   IO.puts("Generated Expiration Date: #{expiration_date}")
+  #   Logger.info("Generated Expiration Date: #{expiration_date}")
 
   #   {:ok,expiration_date}
   # end
@@ -90,7 +90,7 @@ defmodule BAC.Workers.CardValidatorWorker do
   # def gen_new_card_params(card, exp, cvv) do
   #   card_params_new = %{"card_number" =>  card , "expiry_date" => exp , "cvv" => cvv }
 
-  #   IO.puts("its lunch")
+  #   Logger.info("its lunch")
   #  {:ok, card_params_new }
   # end
 

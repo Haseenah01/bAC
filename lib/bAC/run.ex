@@ -1,5 +1,5 @@
 defmodule BAC.Run do
-
+  require Logger
 
   import Ecto.Query, warn: false
   alias BAC.Repo
@@ -22,28 +22,28 @@ defmodule BAC.Run do
 
           {:ok, %{id: job_id, state: my_state} = job} = Oban.insert(BAC.Workers.CreateCustomerWorker.new(%{"customer" => customer_params}))
 
-IO.puts("ANOITHER #{my_state}")
+Logger.info("ANOITHER #{my_state}")
     receive do
       {:notification, :my_app_jobs, %{"complete" => ^job_id,"stat" => my_state}} ->
-        lasa = IO.inspect(Oban.Job
+        lasa = Logger.info(Oban.Job
         |> where([j], j.id == ^job_id)
         |> group_by(:state)
         |> select([j], {j.state})
         |> BAC.Repo.one())
 
-        IO.puts("ANOITHER #{my_state}")
-        IO.puts("Other job complete!  #")
+        Logger.info("ANOITHER #{my_state}")
+        Logger.info("Other job complete!  #")
     after
       30_000 ->
 
-        IO.puts("ANOITHER #{my_state}")
-        IO.puts("Other job didn't finish in 30 seconds!")
+        Logger.info("ANOITHER #{my_state}")
+        Logger.info("Other job didn't finish in 30 seconds!")
     end
 
   end
 
   def mama(id) do
-   lasa = IO.inspect(Oban.Job
+   lasa = Logger.info(Oban.Job
     |> where([j], j.id == ^id)
     |> group_by(:state)
     |> select([j], {j.state})
@@ -55,13 +55,13 @@ IO.puts("ANOITHER #{my_state}")
 #   def verify_id_date_of_birth() do
 #     # Extract the date of birth from the ID (assuming it's in the format "YYMMDD")
 #     extracted_dob = extract_dob_from_id("0001022902822")
-#  IO.inspect(extracted_dob)
+#  Logger.info(extracted_dob)
 #     # Compare the extracted date of birth with the provided date of birth
 #     if extracted_dob == "2000-10-22" do
-#       IO.puts "Date of birth matches ID. Verification successful."
+#       Logger.info "Date of birth matches ID. Verification successful."
 #       true
 #     else
-#       IO.puts "Date of birth does not match ID. Verification failed."
+#       Logger.info "Date of birth does not match ID. Verification failed."
 #       false
 #     end
 #   end
@@ -79,13 +79,13 @@ IO.puts("ANOITHER #{my_state}")
     # Extract the date of birth from the South African ID
     extracted_dob = extract_dob_from_id("0007305224088")
 
-    IO.inspect(extracted_dob)
+    Logger.info(extracted_dob)
     # Compare the extracted date of birth with the provided date of birth
     if extracted_dob == "2000-07-30" do
-      IO.puts "Date of birth matches ID. Verification successful."
+      Logger.info "Date of birth matches ID. Verification successful."
       true
     else
-      IO.puts "Date of birth does not match ID. Verification failed."
+      Logger.info "Date of birth does not match ID. Verification failed."
       false
     end
   end
@@ -115,7 +115,7 @@ IO.puts("ANOITHER #{my_state}")
     # Set the date of birth in the environment (assuming some context like Phoenix or other web framework)
     # For standalone script, you may need to adapt this part
     # For example, you could print the dob instead
-    IO.puts("Date of Birth: #{dob}")
+    Logger.info("Date of Birth: #{dob}")
 
     # Generate a random sequence of numbers and pad with '0' if necessary
     sequence = Integer.to_string(:rand.uniform(10000)) |> String.pad_leading(4, "0")
@@ -138,9 +138,9 @@ IO.puts("ANOITHER #{my_state}")
 
   def validate_said(id_number, dob) do
     if luhn_valid?(id_number) && date_matches?(id_number, dob) do
-      IO.puts("The South African ID number is valid.")
+      Logger.info("The South African ID number is valid.")
     else
-      IO.puts("The South African ID number is not valid.")
+      Logger.info("The South African ID number is not valid.")
     end
   end
 
@@ -192,7 +192,7 @@ IO.puts("ANOITHER #{my_state}")
 
   def generate_and_check_account do
     account_number = generate_account()
-    IO.puts("Generated Account Number: #{account_number}")
+    Logger.info("Generated Account Number: #{account_number}")
   end
 
   # defmodule MyApp do
@@ -200,7 +200,7 @@ IO.puts("ANOITHER #{my_state}")
 
   #   def generate_and_check_account do
   #     account_number = AccountGenerator.generate_account()
-  #     IO.puts("Generated Account Number: #{account_number}")
+  #     Logger.info("Generated Account Number: #{account_number}")
   #   end
   # end
 
@@ -298,7 +298,7 @@ IO.puts("ANOITHER #{my_state}")
   # Example usage
   generate_expiration_date()
   # {expiration_date_parts, formatted_date} = generate_random_expiration_date()
-  # IO.puts("Random Expiration Date: #{formatted_date}")
+  # Logger.info("Random Expiration Date: #{formatted_date}")
 
     end
 
@@ -315,7 +315,7 @@ IO.puts("ANOITHER #{my_state}")
 
       expiration_date = "#{month_string}/#{year_last_two_digits}"
 
-      IO.puts("Generated Expiration Date: #{expiration_date}")
+      Logger.info("Generated Expiration Date: #{expiration_date}")
 
       expiration_date
     end

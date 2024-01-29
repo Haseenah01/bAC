@@ -8,7 +8,7 @@ config :bAC, BAC.ObMailer,
 # Configure your database
 config :bAC, BAC.Repo,
   username: "postgres",
-  password: "Hata@randima.00",
+  password: "postgres",
   hostname: "localhost",
   database: "bac_dev",
   stacktrace: true,

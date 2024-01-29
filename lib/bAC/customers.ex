@@ -36,6 +36,7 @@ defmodule BAC.Customers do
 
   """
   def get_customer!(id), do: Repo.get!(Customer, id)
+  def get_customer!(status), do: Repo.get!(Customer, status)
 
   @doc """
   Creates a customer.

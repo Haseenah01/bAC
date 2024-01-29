@@ -15,7 +15,7 @@ config :bAC, Oban,
   notifier: Oban.Notifiers.PG,
   repo: BAC.Repo,
   plugins: [
-    {Oban.Pro.Plugins.DynamicPruner, mode: {:max_age, {2, :days}}},
+    Oban.Pro.Plugins.DynamicPruner
     #Oban.Plugins.Pruner,
     # {Oban.Plugins.Cron,
     #  crontab: [
@@ -75,6 +75,23 @@ config :tailwind,
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",
   metadata: [:request_id]
+
+  config :logger,
+    backends: [
+      :console,
+      {LoggerFileBackend, :error_log},
+      {LoggerFileBackend, :connection_log}
+      ],
+    format: "$time [$level] $message $metadata\n",
+    metadata: :all
+
+  config :logger, :error_log,
+    path: "error.log",
+    level: :error
+
+  config :logger, :all_log,
+  path: "oban.log",
+  level: :debug
 
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason

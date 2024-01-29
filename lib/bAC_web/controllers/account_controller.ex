@@ -68,16 +68,16 @@ defmodule BACWeb.AccountController do
     new_key = "account_number"
     new_value = BAC.Run.generate_account_number()
 
-    IO.inspect(new_value)
+    Logger.info(new_value)
     new_map = Map.put(account_params, new_key, new_value)
 
    # expiration_date = BAC.Run.generate_expiration_date()
     card_no = generate_card_number_v2()
 
-    IO.inspect(card_no)
+    Logger.info(card_no)
     account_map = Map.put(new_map, "card_number", card_no)
-    IO.inspect(account_map)
-    #customer_struct = IO.inspect(get_customer_user(customer_id))
+    Logger.info(account_map)
+    #customer_struct = Logger.info(get_customer_user(customer_id))
 
     balance_par = Map.get(account_params,"balance")
 
@@ -90,7 +90,7 @@ defmodule BACWeb.AccountController do
 
     # else
 
-    #   {:error, reason} -> {:error, IO.inspect(reason)}
+    #   {:error, reason} -> {:error, Logger.info(reason)}
 
     # end
     with  {:ok, job} <- Oban.insert(BAC.Workers.AccountValidatorWorker.new(%{"customer_id" => customer_id,"account" => account_map})) do
@@ -102,7 +102,7 @@ defmodule BACWeb.AccountController do
 
     else
 
-      {:error, reason} -> {:error, IO.inspect(reason)}
+      {:error, reason} -> {:error, Logger.info(reason)}
 
     end
   end
@@ -119,16 +119,16 @@ defmodule BACWeb.AccountController do
     #   end
     # end
 
-    IO.inspect(account_params)
+    Logger.info(account_params)
 
     # Key-value pair to insert
     new_key = "account_number"
     new_value = BAC.Run.generate_account_number()
-    IO.inspect(new_value)
+    Logger.info(new_value)
 
     new_map = Map.put(account_params, new_key, new_value)
 
-    IO.inspect(new_map)
+    Logger.info(new_map)
 
     #     # Existing map
     # existing_map = %{key1: "value1", key2: "value2"}
@@ -140,7 +140,7 @@ defmodule BACWeb.AccountController do
     # new_map = existing_map
     #           |> Enum.reduce(new_key_value_pairs, &Map.put(&1, elem(&2, 0), elem(&2, 1)))
 
-    # IO.inspect(new_map)
+    # Logger.info(new_map)
 
     # fUNCTIONALITY OF CARD
 
@@ -155,8 +155,8 @@ defmodule BACWeb.AccountController do
       "cvv" => last_three_digits
     }
 
-    IO.inspect(card_params)
-    customer_struct = IO.inspect(get_customer_user(customer_id))
+    Logger.info(card_params)
+    customer_struct = Logger.info(get_customer_user(customer_id))
 
     # {:ok, %Card{} = card} <- Accounts.create_card(account, card_params)
     with {:ok, %Account{} = account} <- Accounts.create_account(customer_struct, new_map),

@@ -13,7 +13,7 @@ defmodule BAC.Workers.CustomerValidatorWorkerPro do
   def process(%Oban.Job{args: %{"customer" => customer_params}} = job) do
 
     email_stru = Map.get(customer_params, "email")
-    IO.inspect(email_stru)
+    Logger.info(email_stru)
     id_stru = Map.get(customer_params, "idNumber")
 
     id = Map.get(customer_params, "idNumber")
@@ -40,7 +40,7 @@ defmodule BAC.Workers.CustomerValidatorWorkerPro do
         |> Oban.insert()
 
         Logger.error("Job id: #{inspect(job.id)} | Job attempted at: #{inspect(job.attempted_at)}| Job state: #{inspect(job.state)} | Job queue: #{inspect(job.queue)} | Job queue: #{job.attempt}")
-        {:error, IO.inspect(reason)}
+        {:error, Logger.info(reason)}
     end
 
   end

@@ -21,8 +21,8 @@ defmodule BAC.Workers.EmailjobPro1 do
       end)
 
     {:ok, customer} = fetch_recorded(token_job)
-    IO.puts "Randima"
-    IO.inspect(customer)
+    Logger.info "Randima"
+    Logger.info(customer)
 
    # {:ok, {token, url}}
 
@@ -37,7 +37,7 @@ defmodule BAC.Workers.EmailjobPro1 do
     ########################################
 
     email_stru = Map.get(customer_params, "email")
-    IO.inspect(email_stru)
+    Logger.info(email_stru)
 
    # Logger.info("Job id: #{inspect(job.id)} | Job attempted at: #{inspect(job.attempted_at)}| Job state: #{inspect(job.state)} | Job queue: #{inspect(job.queue)} | #{to} | #{state} | #{attempt}")
 

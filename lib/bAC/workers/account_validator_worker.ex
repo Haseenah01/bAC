@@ -20,11 +20,11 @@ defmodule BAC.Workers.AccountValidatorWorker do
    #{:ok, cust} <- get_customer_struct_v2(customer_id),
    {:ok, job1} <-  Oban.insert(BAC.Workers.CreateAccountWorker.new(%{"customer_id" => customer_id, "account" => account_params})) do
 
-    IO.puts("Verification successful")
+    Logger.info("Verification successful")
 
     :ok
    else
-    {:error, reason} -> {:error, IO.inspect(reason)}
+    {:error, reason} -> {:error, Logger.info(reason)}
    end
 
   end

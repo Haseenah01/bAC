@@ -13,9 +13,9 @@ defmodule BAC.Workers.CreateCustomerWorker do
 
   @impl true
   def perform(%Oban.Job{args: %{"customer" => customer_params}} = job) do
-    IO.puts("HATALULIHATALULIHATALULI")
+    Logger.info("HATALULIHATALULIHATALULI")
     email_stru = Map.get(customer_params, "email")
-  IO.inspect(email_stru)
+  Logger.info(email_stru)
     id_stru = Map.get(customer_params, "idNumber")
 
 
@@ -24,7 +24,7 @@ defmodule BAC.Workers.CreateCustomerWorker do
     {:ok,  message2} <- verify_email(email_stru),
     {:ok, %Customer{} = customer} <- Customers.create_customer(customer_params) do
 
-   IO.inspect("HERER#E")
+   Logger.info("HERER#E")
 
       # email = new_email(
       #   to: customer.email,
@@ -33,16 +33,16 @@ defmodule BAC.Workers.CreateCustomerWorker do
       #   text_body: "You have suscceful registered your account #{customer.email} !!!"
       # )
       # ObMailer.deliver_now(email)
-     # IO.inspect(customer)
+     # Logger.info(customer)
 
-     IO.inspect(job.state)
+     Logger.info(job.state)
 
      Oban.Notifier.notify(Oban, :my_app_jobs, %{complete: job.id, stat: job.state})
 
       {:ok, customer}
 
     else
-      {:error, reason} -> {:error, IO.inspect(reason)}
+      {:error, reason} -> {:error, Logger.info(reason)}
     end
   #  Logger.info("Job id: #{inspect(job.id)} | Job attempted at: #{inspect(job.attempted_at)}| Job state: #{inspect(job.state)} | Job queue: #{inspect(job.queue)} | #{to} | #{state} | #{attempt}")
 

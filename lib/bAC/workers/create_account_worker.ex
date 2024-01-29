@@ -36,7 +36,7 @@ defmodule BAC.Workers.CreateAccountWorker do
         # %{"to" =>  email_stru, "subject" => "Account  registation failed", "body" => "You verification failedyour account #{email_stru} and #{reason} !!!"}
         # |> BAC.Workers.Emailjob.new()
         # |> Oban.insert()
-        {:error, IO.inspect(reason)}
+        {:error, Logger.info(reason)}
     end
 
   end

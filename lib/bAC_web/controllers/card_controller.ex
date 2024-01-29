@@ -68,11 +68,11 @@ defmodule BACWeb.CardController do
   def verify_card_number(card_number) do
     case get_card_number(card_number) do
       nil ->
-        IO.puts("You can verify")
+        Logger.info("You can verify")
         {:ok,card_number}
        # {:ok, "You can verify"}
       card ->
-        IO.puts("Generating new card number")
+        Logger.info("Generating new card number")
         generate_card_number()
        # {:error, "Already exist within the system"}
     end
@@ -98,7 +98,7 @@ defmodule BACWeb.CardController do
 
     expiration_date = "#{month_string}/#{year_last_two_digits}"
 
-    IO.puts("Generated Expiration Date: #{expiration_date}")
+    Logger.info("Generated Expiration Date: #{expiration_date}")
 
     {:ok,expiration_date}
   end
@@ -114,7 +114,7 @@ defmodule BACWeb.CardController do
     account_single = Map.get(card_params,"account_id")
 
     # Have to put this and do some pattern match
-  # customer_struct = IO.inspect(get_customer_user(customer_single))
+  # customer_struct = Logger.info(get_customer_user(customer_single))
 
    # Verify that card number if exist on database
 
@@ -135,18 +135,18 @@ defmodule BACWeb.CardController do
       #|> put_resp_header("location", ~p"/api/cards/#{card}")
       |> render(:show, card: card)
     else
-      {:error, reason} -> {:error, IO.inspect(reason)}
+      {:error, reason} -> {:error, Logger.info(reason)}
     end
   end
 
 
   def activate_card_v1(conn, %{"id" => id}) do
 
-    IO.inspect(id)
+    Logger.info(id)
     account_struct = BAC.Accounts.get_account!(id)
-    IO.inspect(account_struct)
+    Logger.info(account_struct)
     card_number = account_struct.card_number
-    IO.inspect(card_number)
+    Logger.info(card_number)
 
     cvv = String.slice(card_number, -3, 3)
     expiration_date = BAC.Run.generate_expiration_date()
@@ -154,7 +154,7 @@ defmodule BACWeb.CardController do
 
     with {:ok, job} <- Oban.insert(BAC.Workers.CardValidatorWorker.new(%{"id" => id})) do
     #{:ok, %Card{} = card} <- Accounts.create_card(account_struct, card_params) do
-      IO.puts("Musanda")
+      Logger.info("Musanda")
     conn
       |> put_status(:created)
       |> render(:show11, card: "card")

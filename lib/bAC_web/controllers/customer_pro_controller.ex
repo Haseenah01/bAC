@@ -24,13 +24,13 @@ defmodule BACWeb.CustomerProController do
 # |> WorkerB.add(:d, WorkerB.new(%{url: "getoban.pro"}), deps: [:a])
 # |> WorkerC.add(:e, WorkerC.new(%{}), deps: [:b, :c, :d])
     with {:ok, customer} <- Oban.Pro.Relay.await(Oban.Pro.Relay.async(BAC.Workers.CreateCustomerV2Worker.new(%{"customer" => customer_params})), :timer.seconds(30)) do
-      IO.puts("CustomerValidatorWorker enqueued successfully")
+      Logger.info("CustomerValidatorWorker enqueued successfully")
         conn
         |> put_status(:created)
         |> render(:show, customer: customer)
   else
     {:error, reason} ->
-      IO.puts("CustomerValidatorWorker enqueue failed: #{reason}")
+      Logger.info("CustomerValidatorWorker enqueue failed: #{reason}")
   end
 
   end
