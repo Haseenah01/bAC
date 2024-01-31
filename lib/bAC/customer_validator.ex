@@ -102,7 +102,7 @@ defmodule BAC.CustomerValidator do
 
 
       email = customer_params.email
-     Logger.info(email)
+     Logger.debug(email)
 
 
       email_stru = Map.get(customer_params, "email")

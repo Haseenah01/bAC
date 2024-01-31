@@ -89,7 +89,7 @@ config :logger, :console,
     path: "error.log",
     level: :error
 
-  config :logger, :all_log,
+  config :logger, :connection_log,
   path: "oban.log",
   level: :debug
 
